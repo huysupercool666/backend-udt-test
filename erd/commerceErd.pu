@@ -1,0 +1,89 @@
+@startuml commerceErd
+
+entity Customer {
+  + CustomerId : int
+  --
+  Name : String
+  Email : String
+  PhoneNumber : String
+  Address : String
+  Gender : String
+  Username : String
+  Password : String
+}
+
+entity Cart {
+  + CartId : int
+  --
+  CustomerId : int
+  CreatedAt : Date
+  UpdatedAt : Date
+  CartStatus : String
+}
+
+entity CartItem {
+  + CartItemId : int
+  --
+  CartId : int
+  ProductId : int
+  Quantity : int
+  Price : Decimal
+}
+
+entity Product {
+  + ProductId : int
+  --
+  AgencyId : int
+  Name : String
+  Description : String
+  Price : Decimal
+  StockQuantity : int
+}
+
+entity Transaction {
+  + TransactionId : int
+  --
+  CustomerId : int
+  TransactionDate : Date
+  Status : String
+  TotalAmount : Decimal
+}
+
+entity Billing {
+  + BillingId : int
+  --
+  TransactionId : int  
+  Amount : Decimal
+  BillingDate : Date
+  PaymentStatus : String
+}
+
+entity Agency {
+  + AgencyId : int
+  --
+  Name : String
+  Email : String
+  PhoneNumber : String
+  Address : String
+}
+
+entity Admin {
+  + AdminId : int
+  --
+  Name : String
+  Email : String
+  Username : String
+  Password : String
+}
+
+Customer ||--|{ Cart : "1 - 1"
+Cart ||--|{ CartItem : "1 - n"
+Product ||--|{ CartItem : "1 - n"
+Cart }|--|| Transaction : "1 - 1"
+Transaction ||--|| Billing : "1 - 1"
+
+Agency ||--|{ Product : "1 - n"
+Admin ||--|{ Agency : "1 - n"
+
+
+@enduml
