@@ -1,0 +1,83 @@
+@startuml Authentication and Authorization
+
+actor "User\n(Customer/Agency/Admin)" as User
+participant "Frontend" as FE
+participant "Auth Service" as Auth
+participant "LocalStorage" as Local
+participant "Backend API" as API
+database "Database" as DB
+
+' Login Flow
+group Login
+    User -> FE: Enter credentials
+    FE -> Auth: Login request
+    Auth -> API: Validate credentials
+    API -> DB: Check user exists
+    DB --> API: Return user data
+    API -> Auth: Generate JWT token
+    Auth --> FE: Return token & user role
+    FE -> Local: Store token & user role
+    FE --> User: Redirect to dashboard
+end
+
+' Authorization Flow for Customer
+group Customer Access
+    User -> FE: Request transaction/billing/agency info
+    FE -> Local: Get stored token
+    FE -> API: Request with JWT token
+    API -> Auth: Validate token & check Customer role
+    Auth --> API: Token valid
+    API -> DB: Fetch authorized data
+    DB --> API: Return data
+    API --> FE: Return filtered data
+    FE --> User: Display data
+end
+
+' Authorization Flow for Agency
+group Agency Access
+    User -> FE: CRUD product operations
+    FE -> Local: Get stored token
+    FE -> API: Request with JWT token
+    API -> Auth: Validate token & check Agency role
+    Auth --> API: Token valid
+    API -> DB: Check ownership & perform operation
+    DB --> API: Return result
+    API --> FE: Return response
+    FE --> User: Show result
+end
+
+' Authorization Flow for Admin
+group Admin Access
+    User -> FE: Request system data
+    FE -> Local: Get stored token
+    FE -> API: Request with JWT token
+    API -> Auth: Validate token & check Admin role
+    Auth --> API: Token valid
+    API -> DB: Fetch all data
+    DB --> API: Return data
+    API --> FE: Return complete data
+    FE --> User: Display data
+end
+
+' Logout Flow
+group Logout
+    User -> FE: Click logout
+    FE -> Local: Clear stored token
+    FE -> Auth: Invalidate token
+    Auth --> FE: Token invalidated
+    FE --> User: Redirect to login
+end
+
+' Auto Login Flow
+group Auto Login (Browser Reopen)
+    User -> FE: Open application
+    FE -> Local: Check stored token
+    Local --> FE: Return token if exists
+    FE -> Auth: Validate stored token
+    Auth -> API: Verify token
+    API --> Auth: Token status
+    Auth --> FE: Authentication result
+    FE --> User: Auto login if token valid
+end
+
+@enduml

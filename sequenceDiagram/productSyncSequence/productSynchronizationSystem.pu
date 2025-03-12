@@ -1,0 +1,78 @@
+@startuml Product Synchronization
+
+participant "Scheduler\n(Cron Job)" as Cron
+participant "Sync Service" as Sync
+participant "Third-party API" as ThirdParty
+participant "Queue Service" as Queue
+participant "Worker Service" as Worker
+database "Redis Cache" as Redis
+database "Database" as DB
+
+' Initial Sync Schedule
+group Every Hour
+    Cron -> Sync: Trigger sync process
+    activate Sync
+
+    ' Fetch data from Third-party API
+    Sync -> ThirdParty: Request products data
+    activate ThirdParty
+    ThirdParty --> Sync: Return products data
+    deactivate ThirdParty
+
+    ' Check Last Sync Time
+    Sync -> Redis: Get last sync timestamp
+    Redis --> Sync: Return timestamp
+
+    ' Compare and Queue Changes
+    Sync -> Sync: Compare with last sync\nIdentify changes
+    
+    loop For each changed product
+        Sync -> Queue: Queue product update task
+        activate Queue
+        Queue --> Sync: Task queued
+        deactivate Queue
+    end
+
+    ' Update Last Sync Time
+    Sync -> Redis: Update last sync timestamp
+    deactivate Sync
+end
+
+' Process Queue Items
+group Process Queue (Parallel)
+    loop For each queued task
+        Queue -> Worker: Process product update
+        activate Worker
+
+        ' Check Existing Product
+        Worker -> DB: Check if product exists
+        DB --> Worker: Return product status
+
+        alt New Product
+            Worker -> DB: Insert new product
+        else Updated Product
+            Worker -> Worker: Merge changes
+            Worker -> DB: Update existing product
+        end
+
+        ' Update Cache
+        Worker -> Redis: Update product cache
+        Worker --> Queue: Task completed
+        deactivate Worker
+    end
+end
+
+' Error Handling
+group Error Handling
+    Worker -> Queue: Report failed tasks
+    Queue -> Sync: Notify sync errors
+    Sync -> Redis: Log error details
+end
+
+' Monitoring
+group Monitoring
+    Sync -> Redis: Update sync statistics
+    Worker -> Redis: Update processing statistics
+end
+
+@enduml 
