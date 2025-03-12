@@ -1,7 +1,7 @@
 @startuml commerceErd
 
 entity Customer {
-  + CustomerId : int
+  + CustomerId : String
   --
   Name : String
   Email : String
@@ -13,27 +13,27 @@ entity Customer {
 }
 
 entity Cart {
-  + CartId : int
+  + CartId : String
   --
-  CustomerId : int
+  CustomerId : String
   CreatedAt : Date
   UpdatedAt : Date
   CartStatus : String
 }
 
 entity CartItem {
-  + CartItemId : int
+  + CartItemId : String
   --
-  CartId : int
-  ProductId : int
+  CartId : String
+  ProductId : String
   Quantity : int
   Price : Decimal
 }
 
 entity Product {
-  + ProductId : int
+  + ProductId : String
   --
-  AgencyId : int
+  AgencyId : String
   Name : String
   Description : String
   Price : Decimal
@@ -41,34 +41,38 @@ entity Product {
 }
 
 entity Transaction {
-  + TransactionId : int
+  + TransactionId : String
   --
-  CustomerId : int
+  CustomerId : String
+  AgencyId : String
+  CartId : String
   TransactionDate : Date
   Status : String
   TotalAmount : Decimal
 }
 
 entity Billing {
-  + BillingId : int
+  + BillingId : String
   --
-  TransactionId : int  
+  TransactionId : String  
   Amount : Decimal
   BillingDate : Date
   PaymentStatus : String
 }
 
 entity Agency {
-  + AgencyId : int
+  + AgencyId : String
   --
   Name : String
   Email : String
   PhoneNumber : String
   Address : String
+  Gender : String
+  ProductId : String
 }
 
 entity Admin {
-  + AdminId : int
+  + AdminId : String
   --
   Name : String
   Email : String
@@ -76,14 +80,15 @@ entity Admin {
   Password : String
 }
 
-Customer ||--|{ Cart : "1 - 1"
+Customer ||--o{ Cart : "1 - n"
+Customer ||--o{ Transaction : "1 - n"
 Cart ||--|{ CartItem : "1 - n"
-Product ||--|{ CartItem : "1 - n"
-Cart }|--|| Transaction : "1 - 1"
+Product ||--o{ CartItem : "1 - n"
+Transaction ||--|| Cart : "1 - 1"
 Transaction ||--|| Billing : "1 - 1"
 
 Agency ||--|{ Product : "1 - n"
+Agency ||--o{ Transaction : "1 - n"
 Admin ||--|{ Agency : "1 - n"
-
 
 @enduml
