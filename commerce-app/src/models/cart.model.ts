@@ -1,38 +1,50 @@
-import {Entity, model, property} from '@loopback/repository';
+import {
+  Entity,
+  model,
+  property,
+  belongsTo,
+  hasMany,
+  hasOne,
+} from '@loopback/repository';
+import { Customer } from './customer.model';
+import { Transaction } from './transaction.model';
+import { CartItem } from './cart-item.model';
 
 @model()
 export class Cart extends Entity {
   @property({
-    type: 'number',
+    type: 'string',
     id: true,
     generated: true,
   })
-  CartId?: number;
-
-  @property({
-    type: 'number',
-    required: true,
-  })
-  CustomerId: number;
+  cartId?: string;
 
   @property({
     type: 'date',
     required: true,
   })
-  CreatedAt: string;
+  createdAt: string;
+
+  @belongsTo(() => Customer)
+  customerId: string;
+
+  @hasOne(() => Transaction)
+  transaction: Transaction;
 
   @property({
     type: 'date',
     required: true,
   })
-  UpdatedAt: string;
+  updatedAt: string;
 
   @property({
-    type: 'boolean',
+    type: 'string',
     required: true,
   })
-  CartStatus: boolean;
+  cartStatus: string;
 
+  @hasMany(() => CartItem)
+  cartItems: CartItem[];
 
   constructor(data?: Partial<Cart>) {
     super(data);

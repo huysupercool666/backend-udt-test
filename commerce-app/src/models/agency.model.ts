@@ -1,38 +1,61 @@
-import {Entity, model, property} from '@loopback/repository';
+import {
+  Entity,
+  model,
+  property,
+  belongsTo,
+  hasMany,
+} from '@loopback/repository';
+import { Admin } from './admin.model';
+import { Product } from './product.model';
+import { Transaction } from './transaction.model';
 
 @model()
 export class Agency extends Entity {
   @property({
-    type: 'number',
+    type: 'string',
     id: true,
     generated: true,
   })
-  AgencyId?: number;
+  agencyId?: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  Name: string;
+  name: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  Email: string;
+  email: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  PhoneNumber: string;
+  phoneNumber: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  Address: string;
+  address: string;
 
+  @property({
+    type: 'string',
+    required: true,
+  })
+  gender: string;
+
+  @belongsTo(() => Admin)
+  adminId: string;
+
+  @hasMany(() => Product)
+  products: Product[];
+
+  @hasMany(() => Transaction)
+  transactions: Transaction[];
 
   constructor(data?: Partial<Agency>) {
     super(data);

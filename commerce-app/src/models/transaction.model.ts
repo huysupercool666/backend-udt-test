@@ -1,37 +1,52 @@
-import {Entity, model, property} from '@loopback/repository';
+import {
+  Entity,
+  model,
+  property,
+  belongsTo,
+  hasOne,
+} from '@loopback/repository';
+import { Customer } from './customer.model';
+import { Agency } from './agency.model';
+import { Cart } from './cart.model';
+import { Billing } from './billing.model';
 
 @model()
 export class Transaction extends Entity {
   @property({
-    type: 'number',
-    required: true,
+    type: 'string',
+    id: true,
+    generated: true,
   })
-  TransactionId: number;
+  transactionId?: string;
 
-  @property({
-    type: 'number',
-    required: true,
-  })
-  CustomerId: number;
+  @belongsTo(() => Customer)
+  customerId: string;
+
+  @belongsTo(() => Agency)
+  agencyId: string;
 
   @property({
     type: 'date',
     required: true,
   })
-  TransactionDate: string;
+  transactionDate: string;
 
+  @belongsTo(() => Cart)
+  cartId: string;
   @property({
-    type: 'boolean',
+    type: 'string',
     required: true,
   })
-  Status: boolean;
+  status: string;
 
   @property({
-    type: 'any',
+    type: 'number',
     required: true,
   })
-  TotalAmount: any;
+  totalAmount: number;
 
+  @hasOne(() => Billing)
+  billing: Billing;
 
   constructor(data?: Partial<Transaction>) {
     super(data);

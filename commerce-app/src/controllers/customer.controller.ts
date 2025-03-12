@@ -17,19 +17,19 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {Customer} from '../models';
-import {CustomerRepository} from '../repositories';
+import { Customer } from '../models';
+import { CustomerRepository } from '../repositories';
 
 export class CustomerController {
   constructor(
     @repository(CustomerRepository)
-    public customerRepository : CustomerRepository,
+    public customerRepository: CustomerRepository,
   ) {}
 
   @post('/customers')
   @response(200, {
     description: 'Customer model instance',
-    content: {'application/json': {schema: getModelSchemaRef(Customer)}},
+    content: { 'application/json': { schema: getModelSchemaRef(Customer) } },
   })
   async create(
     @requestBody({
@@ -37,12 +37,12 @@ export class CustomerController {
         'application/json': {
           schema: getModelSchemaRef(Customer, {
             title: 'NewCustomer',
-            exclude: ['CustomerId'],
+            exclude: ['customerId'],
           }),
         },
       },
     })
-    customer: Omit<Customer, 'CustomerId'>,
+    customer: Omit<Customer, 'customerId'>,
   ): Promise<Customer> {
     return this.customerRepository.create(customer);
   }
@@ -50,11 +50,9 @@ export class CustomerController {
   @get('/customers/count')
   @response(200, {
     description: 'Customer model count',
-    content: {'application/json': {schema: CountSchema}},
+    content: { 'application/json': { schema: CountSchema } },
   })
-  async count(
-    @param.where(Customer) where?: Where<Customer>,
-  ): Promise<Count> {
+  async count(@param.where(Customer) where?: Where<Customer>): Promise<Count> {
     return this.customerRepository.count(where);
   }
 
@@ -65,7 +63,7 @@ export class CustomerController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(Customer, {includeRelations: true}),
+          items: getModelSchemaRef(Customer, { includeRelations: true }),
         },
       },
     },
@@ -79,13 +77,13 @@ export class CustomerController {
   @patch('/customers')
   @response(200, {
     description: 'Customer PATCH success count',
-    content: {'application/json': {schema: CountSchema}},
+    content: { 'application/json': { schema: CountSchema } },
   })
   async updateAll(
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Customer, {partial: true}),
+          schema: getModelSchemaRef(Customer, { partial: true }),
         },
       },
     })
@@ -95,56 +93,59 @@ export class CustomerController {
     return this.customerRepository.updateAll(customer, where);
   }
 
-  @get('/customers/{id}')
+  @get('/customers/{customerId}')
   @response(200, {
     description: 'Customer model instance',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(Customer, {includeRelations: true}),
+        schema: getModelSchemaRef(Customer, { includeRelations: true }),
       },
     },
   })
   async findById(
-    @param.path.number('id') id: number,
-    @param.filter(Customer, {exclude: 'where'}) filter?: FilterExcludingWhere<Customer>
+    @param.path.string('customerId') customerId: string,
+    @param.filter(Customer, { exclude: 'where' })
+    filter?: FilterExcludingWhere<Customer>,
   ): Promise<Customer> {
-    return this.customerRepository.findById(id, filter);
+    return this.customerRepository.findById(customerId, filter);
   }
 
-  @patch('/customers/{id}')
+  @patch('/customers/{customerId}')
   @response(204, {
     description: 'Customer PATCH success',
   })
   async updateById(
-    @param.path.number('id') id: number,
+    @param.path.string('customerId') customerId: string,
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Customer, {partial: true}),
+          schema: getModelSchemaRef(Customer, { partial: true }),
         },
       },
     })
     customer: Customer,
   ): Promise<void> {
-    await this.customerRepository.updateById(id, customer);
+    await this.customerRepository.updateById(customerId, customer);
   }
 
-  @put('/customers/{id}')
+  @put('/customers/{customerId}')
   @response(204, {
     description: 'Customer PUT success',
   })
   async replaceById(
-    @param.path.number('id') id: number,
+    @param.path.string('customerId') customerId: string,
     @requestBody() customer: Customer,
   ): Promise<void> {
-    await this.customerRepository.replaceById(id, customer);
+    await this.customerRepository.replaceById(customerId, customer);
   }
 
-  @del('/customers/{id}')
+  @del('/customers/{customerId}')
   @response(204, {
     description: 'Customer DELETE success',
   })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
-    await this.customerRepository.deleteById(id);
+  async deleteById(
+    @param.path.string('customerId') customerId: string,
+  ): Promise<void> {
+    await this.customerRepository.deleteById(customerId);
   }
 }

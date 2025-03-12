@@ -15,7 +15,7 @@ entity Customer {
 entity Cart {
   + CartId : String
   --
-  CustomerId : String
+  # CustomerId : String
   CreatedAt : Date
   UpdatedAt : Date
   CartStatus : String
@@ -24,38 +24,38 @@ entity Cart {
 entity CartItem {
   + CartItemId : String
   --
-  CartId : String
-  ProductId : String
+  # CartId : String
+  # ProductId : String
   Quantity : int
-  Price : Decimal
+  Price : Number
 }
 
 entity Product {
   + ProductId : String
   --
-  AgencyId : String
+  # AgencyId : String
   Name : String
   Description : String
-  Price : Decimal
+  Price : Number
   StockQuantity : int
 }
 
 entity Transaction {
   + TransactionId : String
   --
-  CustomerId : String
-  AgencyId : String
-  CartId : String
+  # CustomerId : String
+  # AgencyId : String
+  # CartId : String
   TransactionDate : Date
   Status : String
-  TotalAmount : Decimal
+  TotalAmount : Number
 }
 
 entity Billing {
   + BillingId : String
   --
-  TransactionId : String  
-  Amount : Decimal
+  # TransactionId : String  
+  Amount : Number
   BillingDate : Date
   PaymentStatus : String
 }
@@ -68,7 +68,7 @@ entity Agency {
   PhoneNumber : String
   Address : String
   Gender : String
-  ProductId : String
+  # AdminId : String
 }
 
 entity Admin {

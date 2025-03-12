@@ -1,4 +1,12 @@
-import {Entity, model, property} from '@loopback/repository';
+import {
+  Entity,
+  model,
+  property,
+  belongsTo,
+  hasMany,
+} from '@loopback/repository';
+import { CartItem } from './cart-item.model';
+import { Agency } from './agency.model';
 
 @model()
 export class Product extends Entity {
@@ -7,37 +15,36 @@ export class Product extends Entity {
     id: true,
     generated: true,
   })
-  ProductId?: string;
+  productId?: string;
+
+  @belongsTo(() => Agency)
+  agencyId: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  name: string;
+
+  @property({
+    type: 'string',
+  })
+  description?: string;
+
+  @hasMany(() => CartItem)
+  cartItems: CartItem[];
 
   @property({
     type: 'number',
     required: true,
   })
-  AgencyId: number;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
-  Name: string;
-
-  @property({
-    type: 'string',
-  })
-  Description?: string;
-
-  @property({
-    type: 'any',
-    required: true,
-  })
-  Price: any;
+  price: number;
 
   @property({
     type: 'number',
     default: 0,
   })
-  StockQuantity?: number;
-
+  stockQuantity?: number;
 
   constructor(data?: Partial<Product>) {
     super(data);

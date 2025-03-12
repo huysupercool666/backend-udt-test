@@ -1,56 +1,62 @@
-import {Entity, model, property} from '@loopback/repository';
-
+import { Entity, model, property, hasMany } from '@loopback/repository';
+import {Cart} from './cart.model';
+import {Transaction} from './transaction.model';
 @model()
 export class Customer extends Entity {
   @property({
-    type: 'number',
+    type: 'string',
     id: true,
     generated: true,
   })
-  CustomerId?: number;
+  customerId?: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  Name: string;
+  name: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  Email: string;
+  email: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  PhoneNumber: string;
+  phoneNumber: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  Address: string;
+  address: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  Gender: string;
+  gender: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  Username: string;
+  username: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  Password: string;
+  password: string;
 
+  @hasMany(() => Cart)
+  carts: Cart[];
+
+  @hasMany(() => Transaction)
+  transactions: Transaction[];
 
   constructor(data?: Partial<Customer>) {
     super(data);

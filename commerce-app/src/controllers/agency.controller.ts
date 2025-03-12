@@ -37,12 +37,12 @@ export class AgencyController {
         'application/json': {
           schema: getModelSchemaRef(Agency, {
             title: 'NewAgency',
-            exclude: ['AgencyId'],
+            exclude: ['agencyId'],
           }),
         },
       },
     })
-    agency: Omit<Agency, 'AgencyId'>,
+    agency: Omit<Agency, 'agencyId'>,
   ): Promise<Agency> {
     return this.agencyRepository.create(agency);
   }
@@ -95,7 +95,7 @@ export class AgencyController {
     return this.agencyRepository.updateAll(agency, where);
   }
 
-  @get('/agencies/{id}')
+  @get('/agencies/{agencyId}')
   @response(200, {
     description: 'Agency model instance',
     content: {
@@ -105,18 +105,18 @@ export class AgencyController {
     },
   })
   async findById(
-    @param.path.number('id') id: number,
+    @param.path.string('agencyId') agencyId: string,
     @param.filter(Agency, {exclude: 'where'}) filter?: FilterExcludingWhere<Agency>
   ): Promise<Agency> {
-    return this.agencyRepository.findById(id, filter);
+    return this.agencyRepository.findById(agencyId, filter);
   }
 
-  @patch('/agencies/{id}')
+  @patch('/agencies/{agencyId}')
   @response(204, {
     description: 'Agency PATCH success',
   })
   async updateById(
-    @param.path.number('id') id: number,
+    @param.path.string('agencyId') agencyId: string,
     @requestBody({
       content: {
         'application/json': {
@@ -126,25 +126,25 @@ export class AgencyController {
     })
     agency: Agency,
   ): Promise<void> {
-    await this.agencyRepository.updateById(id, agency);
+    await this.agencyRepository.updateById(agencyId, agency);
   }
 
-  @put('/agencies/{id}')
+  @put('/agencies/{agencyId}')
   @response(204, {
     description: 'Agency PUT success',
   })
   async replaceById(
-    @param.path.number('id') id: number,
+    @param.path.string('agencyId') agencyId: string,
     @requestBody() agency: Agency,
   ): Promise<void> {
-    await this.agencyRepository.replaceById(id, agency);
+    await this.agencyRepository.replaceById(agencyId, agency);
   }
 
-  @del('/agencies/{id}')
+  @del('/agencies/{agencyId}')
   @response(204, {
     description: 'Agency DELETE success',
   })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
-    await this.agencyRepository.deleteById(id);
+  async deleteById(@param.path.string('agencyId') agencyId: string): Promise<void> {
+    await this.agencyRepository.deleteById(agencyId);
   }
 }

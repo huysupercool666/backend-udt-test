@@ -17,19 +17,19 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {Admin} from '../models';
-import {AdminRepository} from '../repositories';
+import { Admin } from '../models';
+import { AdminRepository } from '../repositories';
 
 export class AdminController {
   constructor(
     @repository(AdminRepository)
-    public adminRepository : AdminRepository,
+    public adminRepository: AdminRepository,
   ) {}
 
   @post('/admins')
   @response(200, {
     description: 'Admin model instance',
-    content: {'application/json': {schema: getModelSchemaRef(Admin)}},
+    content: { 'application/json': { schema: getModelSchemaRef(Admin) } },
   })
   async create(
     @requestBody({
@@ -37,12 +37,12 @@ export class AdminController {
         'application/json': {
           schema: getModelSchemaRef(Admin, {
             title: 'NewAdmin',
-            exclude: ['AdminId'],
+            exclude: ['adminId'],
           }),
         },
       },
     })
-    admin: Omit<Admin, 'AdminId'>,
+    admin: Omit<Admin, 'adminId'>,
   ): Promise<Admin> {
     return this.adminRepository.create(admin);
   }
@@ -50,11 +50,9 @@ export class AdminController {
   @get('/admins/count')
   @response(200, {
     description: 'Admin model count',
-    content: {'application/json': {schema: CountSchema}},
+    content: { 'application/json': { schema: CountSchema } },
   })
-  async count(
-    @param.where(Admin) where?: Where<Admin>,
-  ): Promise<Count> {
+  async count(@param.where(Admin) where?: Where<Admin>): Promise<Count> {
     return this.adminRepository.count(where);
   }
 
@@ -65,27 +63,25 @@ export class AdminController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(Admin, {includeRelations: true}),
+          items: getModelSchemaRef(Admin, { includeRelations: true }),
         },
       },
     },
   })
-  async find(
-    @param.filter(Admin) filter?: Filter<Admin>,
-  ): Promise<Admin[]> {
+  async find(@param.filter(Admin) filter?: Filter<Admin>): Promise<Admin[]> {
     return this.adminRepository.find(filter);
   }
 
   @patch('/admins')
   @response(200, {
     description: 'Admin PATCH success count',
-    content: {'application/json': {schema: CountSchema}},
+    content: { 'application/json': { schema: CountSchema } },
   })
   async updateAll(
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Admin, {partial: true}),
+          schema: getModelSchemaRef(Admin, { partial: true }),
         },
       },
     })
@@ -95,56 +91,59 @@ export class AdminController {
     return this.adminRepository.updateAll(admin, where);
   }
 
-  @get('/admins/{id}')
+  @get('/admins/{adminId}')
   @response(200, {
     description: 'Admin model instance',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(Admin, {includeRelations: true}),
+        schema: getModelSchemaRef(Admin, { includeRelations: true }),
       },
     },
   })
   async findById(
-    @param.path.number('id') id: number,
-    @param.filter(Admin, {exclude: 'where'}) filter?: FilterExcludingWhere<Admin>
+    @param.path.string('adminId') adminId: string,
+    @param.filter(Admin, { exclude: 'where' })
+    filter?: FilterExcludingWhere<Admin>,
   ): Promise<Admin> {
-    return this.adminRepository.findById(id, filter);
+    return this.adminRepository.findById(adminId, filter);
   }
 
-  @patch('/admins/{id}')
+  @patch('/admins/{adminId}')
   @response(204, {
     description: 'Admin PATCH success',
   })
   async updateById(
-    @param.path.number('id') id: number,
+    @param.path.string('adminId') adminId: string,
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Admin, {partial: true}),
+          schema: getModelSchemaRef(Admin, { partial: true }),
         },
       },
     })
     admin: Admin,
   ): Promise<void> {
-    await this.adminRepository.updateById(id, admin);
+    await this.adminRepository.updateById(adminId, admin);
   }
 
-  @put('/admins/{id}')
+  @put('/admins/{adminId}')
   @response(204, {
     description: 'Admin PUT success',
   })
   async replaceById(
-    @param.path.number('id') id: number,
+    @param.path.string('adminId') adminId: string,
     @requestBody() admin: Admin,
   ): Promise<void> {
-    await this.adminRepository.replaceById(id, admin);
+    await this.adminRepository.replaceById(adminId, admin);
   }
 
-  @del('/admins/{id}')
+  @del('/admins/{adminId}')
   @response(204, {
     description: 'Admin DELETE success',
   })
-  async deleteById(@param.path.number('id') id: number): Promise<void> {
-    await this.adminRepository.deleteById(id);
+  async deleteById(
+    @param.path.string('adminId') adminId: string,
+  ): Promise<void> {
+    await this.adminRepository.deleteById(adminId);
   }
 }

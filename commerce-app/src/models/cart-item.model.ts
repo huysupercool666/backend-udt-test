@@ -1,38 +1,33 @@
-import {Entity, model, property} from '@loopback/repository';
+import { Entity, model, property, belongsTo } from '@loopback/repository';
+import { Cart } from './cart.model';
+import { Product } from './product.model';
 
 @model()
 export class CartItem extends Entity {
   @property({
-    type: 'number',
+    type: 'string',
     id: true,
     generated: true,
   })
-  CartItemId?: number;
+  cartItemId?: string;
 
   @property({
     type: 'number',
     required: true,
   })
-  CartId: number;
+  quantity: number;
 
   @property({
     type: 'number',
     required: true,
   })
-  ProductId: number;
+  price: number;
 
-  @property({
-    type: 'number',
-    required: true,
-  })
-  Quantity: number;
+  @belongsTo(() => Cart)
+  cartId: string;
 
-  @property({
-    type: 'any',
-    required: true,
-  })
-  Price: any;
-
+  @belongsTo(() => Product)
+  productId: string;
 
   constructor(data?: Partial<CartItem>) {
     super(data);
@@ -40,7 +35,8 @@ export class CartItem extends Entity {
 }
 
 export interface CartItemRelations {
-  // describe navigational properties here
+  cart?: Cart;
+  product?: Product;
 }
 
 export type CartItemWithRelations = CartItem & CartItemRelations;

@@ -1,37 +1,40 @@
-import {Entity, model, property} from '@loopback/repository';
-
+import { Entity, model, property, hasMany } from '@loopback/repository';
+import { Agency } from './agency.model';
 @model()
 export class Admin extends Entity {
   @property({
-    type: 'number',
+    type: 'string',
     id: true,
     generated: true,
   })
-  AdminId?: number;
+  adminId?: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  Name: string;
+  name: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  Email: string;
+  email: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  Username: string;
+  username: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  Password: string;
+  password: string;
+
+  @hasMany(() => Agency)
+  agencies: Agency[];
 
   constructor(data?: Partial<Admin>) {
     super(data);

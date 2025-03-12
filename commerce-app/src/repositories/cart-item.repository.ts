@@ -5,7 +5,7 @@ import {CartItem, CartItemRelations} from '../models';
 
 export class CartItemRepository extends DefaultCrudRepository<
   CartItem,
-  typeof CartItem.prototype.CartItemId,
+  typeof CartItem.prototype.cartItemId,
   CartItemRelations
 > {
   constructor(
